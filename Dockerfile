@@ -24,7 +24,7 @@ FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # nginx容器内部暴露的端口
-EXPOSE 80
+EXPOSE 8099
 
 # 运行的命令
 CMD ["nginx", "-g", "daemon off;"]
