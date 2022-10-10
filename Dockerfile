@@ -1,9 +1,5 @@
 # build stage
 FROM node:12-alpine as build-stage
-
-# 镜像的元信息,maintainer项目维护者
-LABEL maintainer="1597284782@qq.com"
-
 # 创建一个工作目录
 WORKDIR /app
 
@@ -24,7 +20,7 @@ FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # nginx容器内部暴露的端口
-EXPOSE 8099
+EXPOSE 80
 
 # 运行的命令
 CMD ["nginx", "-g", "daemon off;"]
