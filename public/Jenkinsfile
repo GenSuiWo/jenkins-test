@@ -1,0 +1,41 @@
+pipeline {
+  agent any
+
+  environment {
+    DOCKER_IMAGE = 'jks_test'
+    DIST_DIR = 'dist'
+  }
+
+  stages {
+    stage('拉取代码') {
+      steps {
+        git 'https://github.com/GenSuiWo/jenkins-test.git'
+      }
+    }
+
+    stage('安装依赖 & 构建') {
+      steps {
+        sh 'pnpm install'
+        sh 'pnpm run build'
+      }
+    }
+
+    stage('打包 Docker 镜像') {
+      steps {
+        script {
+          docker.build("${DOCKER_IMAGE}:latest", '.')
+        }
+      }
+    }
+
+    stage('停止旧容器 & 启动新容器') {
+      steps {
+        sh '''
+        docker stop vue-web || true
+        docker rm vue-web || true
+        docker run -d --name vue-web -p 80:80 ${DOCKER_IMAGE}:latest
+        '''
+      }
+    }
+  }
+}
